@@ -31,6 +31,35 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Express session middleware
+app.use(session({
+  secret: 'I am not a secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}));
+
+// Flash middleware
+app.use(flash());
+
+// Express validator middleware
+app.use(validator({
+  errorFormatter: function(param, msg, value) {
+    var namespace = param.split('.')
+        , root    = namespace.shift()
+        , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
+
 // Routs middleware
 app.use('/', index);
 app.use('/admin', admin);

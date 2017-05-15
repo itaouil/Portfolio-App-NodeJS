@@ -26,21 +26,28 @@ router.get('/add', function(req, res, next) {
 });
 
 // Admin add project page (post)
-router.get('/add', upload.single('projectImage'), function(req, res, next) {
+router.post('/add', upload.single('image'), function(req, res, next) {
 
   // Get fields
   var title       = req.body.title;
   var service     = req.body.service;
   var client      = req.body.client;
+  var url         = req.body.url;
   var description = req.body.description;
-  var projectDate = req.body.projectDate;
+  var date        = req.body.date;
 
   // Form validation
   req.checkBody('title', 'Project title required').notEmpty();
   req.checkBody('service', 'Project type required').notEmpty();
 
+  // Check if file uploaded
+  if (req.file)
+    var projectImage = req.file.filename;
+  else
+    var projectImage = 'noImage.jpg';
+
   // Validation errors
-  var errors = validationErrors();
+  var errors = req.validationErrors();
 
   if (errors) {
     res.render('admin/add',  {
@@ -48,9 +55,31 @@ router.get('/add', upload.single('projectImage'), function(req, res, next) {
       title: title,
       service: service,
       client: client,
+      url: url,
       description: description,
-      projectDate: projectDate
+      date: date
     });
+  }
+
+  else {
+    var project = {
+      title: title,
+      service: service,
+      client: client,
+      url: url,
+      description: description,
+      image: projectImage,
+      date: date
+    };
+
+    var query = connection.query('INSERT INTO portfolio SET ?', project, function (err, result) {
+      console.log("Error:", err);
+      console.log("Result:", result)
+    });
+
+    req.flash('succes_msg', 'inserted project');
+
+    res.redirect('/admin');
   }
 
 });
