@@ -1,33 +1,37 @@
 // Modules
 var express       = require('express');
 var path          = require('path');
+var logger        = require('morgan');
 var cookieParser  = require('cookie-parser');
 var bodyParser    = require('body-parser');
 var validator     = require('express-validator');
-var flash         = require('flash');
+var flash         = require('connect-flash');
 var session       = require('express-session');
 var mysql         = require('mysql');
 var moment        = require('moment');
 var multer        = require('multer');
-var upload        = multer({ dest: 'public/img/portfolio' })
+var upload        = multer({ dest: 'public/img/portfolio' });
 
 // Routes modules
 var index = require('./routes/index');
 var admin = require('./routes/admin');
 
+// Express app
 var app = express();
 
-// view engine setup
+// Handlebars View Set Up
 app.set('views', path.join(__dirname, 'views'));
+app.set('view options', { layout: 'layouts/main' });
 app.set('view engine', 'hbs');
 
-// Middleware
+// Middlewares
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routs middleware
 app.use('/', index);
 app.use('/admin', admin);
 
