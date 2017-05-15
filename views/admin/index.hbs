@@ -1,1 +1,30 @@
-<a href="/admin/add" class="success">Add Project</a>
+<a href="/admin/add" class="button success">Add Project</a>
+<a href="/" class="button default float-right">Back</a>
+<hr>
+
+{{#if projects}}
+    <table>
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Service</th>
+            <th></th>
+        </tr>
+
+        {{#each projects}}
+            <tr>
+                <td><img src="/img/portfolio/{{image}}" class="small-img" ></td>
+                <td>{{id}}</td>
+                <td>{{title}}</td>
+                <td>{{service}}</td>
+                <td>
+                    <a href="/admin/edit/{{id}}" class="button default">Edit</a>
+                    <a href="/admin/delete/{{id}}" class="button alert delete-project" data-id="{{id}}">Delete</a>
+                </td>
+            </tr>
+        {{/each}}
+    </table>
+{{else}}
+    <p>No projects</p>
+{{/if}}

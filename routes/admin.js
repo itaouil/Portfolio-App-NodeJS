@@ -3,7 +3,7 @@ var router = express.Router();
 
 // File upload
 var multer = require('multer');
-var upload = multer({ dest: '../public/img/portfolio' });
+var upload = multer({ dest: './public/img/portfolio' });
 
 // MySQL database connection
 var mysql  = require('mysql');
@@ -17,7 +17,12 @@ connection.connect();
 
 // Admin index page
 router.get('/', function(req, res, next) {
-  res.render('admin/index');
+  connection.query('SELECT * FROM portfolio', function (err, rows) {
+    if (err) throw err;
+    res.render('admin/index', {
+      projects: rows
+    });
+  });
 });
 
 // Admin add project page
@@ -72,7 +77,7 @@ router.post('/add', upload.single('image'), function(req, res, next) {
       date: date
     };
 
-    var query = connection.query('INSERT INTO portfolio SET ?', project, function (err, result) {
+    connection.query('INSERT INTO portfolio SET ?', project, function (err, result) {
       console.log("Error:", err);
       console.log("Result:", result)
     });
