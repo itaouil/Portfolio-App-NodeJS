@@ -11,10 +11,10 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-// Portfolio's home page
+// projects's home page
 router.get('/', function(req, res, next) {
 
-  connection.query("SELECT * FROM portfolio", function (err, rows) {
+  connection.query("SELECT * FROM projects", function (err, rows) {
     if (err) throw err;
     res.render('index',  {
       projects: rows
@@ -23,13 +23,15 @@ router.get('/', function(req, res, next) {
 
 });
 
-// Portfolio's project details
-router.get('/details', function(req, res, next) {
+// projects's project details
+router.get('/details/:id', function(req, res, next) {
 
-  connection.query("SELECT * FROM portfolio WHERE id=?", req.query.id, function (err, row) {
+  console.log("ID", req.params.id);
+
+  connection.query("SELECT * FROM projects WHERE id=?", req.params.id, function (err, rows) {
     if (err) throw err;
-    res.render('index',  {
-      project: row[0]
+    res.render('details',  {
+      project: rows[0]
     });
   });
 
